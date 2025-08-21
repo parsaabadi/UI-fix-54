@@ -31,6 +31,8 @@
     :is-in-list-clear="isInListClear"
     :in-list-clear-label="inListClearLabel"
     :in-list-clear-icon="inListClearIcon"
+    :model-name="modelName"
+    tree-type="parameter"
     @om-table-tree-show-hidden="onToogleHiddenNodes"
     @om-table-tree-show-not-in-list="onToogleInListFilter"
     @om-table-tree-leaf-select="onParamLeafClick"
@@ -102,6 +104,10 @@ export default {
     maxTypeSize () {
       const s = Mdf.configEnvValue(this.serverConfig, 'OM_CFG_TYPE_MAX_LEN')
       return ((s || '') !== '') ? parseInt(s) : 0
+    },
+
+    modelName () {
+      return Mdf.modelName(this.theModel)
     },
 
     ...mapState(useModelStore, [

@@ -22,6 +22,8 @@
     :filter-placeholder="$t('Find parameter...')"
     :no-results-label="$t('No model parameters found')"
     :no-nodes-label="$t('No model parameters found or server offline')"
+    :model-name="modelName"
+    tree-type="parameter"
     @om-table-tree-show-hidden="onToogleHiddenNodes"
     @om-table-tree-leaf-select="onParamLeafClick"
     @om-table-tree-leaf-add="onAddClick"
@@ -83,6 +85,10 @@ export default {
     maxTypeSize () {
       const s = Mdf.configEnvValue(this.serverConfig, 'OM_CFG_TYPE_MAX_LEN')
       return ((s || '') !== '') ? parseInt(s) : 0
+    },
+
+    modelName () {
+      return Mdf.modelName(this.theModel)
     },
 
     ...mapState(useModelStore, [

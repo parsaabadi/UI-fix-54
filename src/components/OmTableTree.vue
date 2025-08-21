@@ -96,6 +96,8 @@ Expected array of tree items as:
       :filter-method="doTreeFilter"
       :no-results-label="noResultsLabel"
       :no-nodes-label="noNodesLabel"
+      :expanded="expandedKeys"
+      @update:expanded="onExpandedUpdate"
       >
       <template v-slot:default-header="prop">
 
@@ -302,13 +304,16 @@ export default {
     inListIcon: { type: String, default: '' },
     isInListClear: { type: Boolean, default: false },
     inListClearLabel: { type: String, default: '' },
-    inListClearIcon: { type: String, default: '' }
+    inListClearIcon: { type: String, default: '' },
+    modelName: { type: String, default: '' },
+    treeType: { type: String, default: 'parameter' }
   },
 
   data () {
     return {
       isTreeExpanded: this.isAllExpand,
       treeFilter: '',
+      expandedKeys: [],
       treeWalk: {
         isAnyFound: false,
         keysFound: {} // if node match filter then map keysFound[node.key] = true
@@ -408,11 +413,28 @@ export default {
       this.treeWalk.isAnyFound = false
       this.treeWalk.keysFound = {}
       this.$refs.filterInput.focus()
+    },
+
+    async onExpandedUpdate (expandedKeys) {
+      this.expandedKeys = expandedKeys || []
+      if (this.modelName && this.treeType) {
+        await this.$userSession.saveTreeExpansion(this.modelName, this.treeType, this.expandedKeys)
+      }
+    },
+
+    async restoreExpandedState () {
+      if (this.modelName && this.treeType) {
+        const savedKeys = await this.$userSession.getTreeExpansion(this.modelName, this.treeType)
+        if (Array.isArray(savedKeys) && savedKeys.length > 0) {
+          this.expandedKeys = savedKeys
+        }
+      }
     }
   },
 
-  mounted () {
+  async mounted () {
     this.doRefresh()
+    await this.restoreExpandedState()
   }
 }
 </script>

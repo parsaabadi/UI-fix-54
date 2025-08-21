@@ -27,6 +27,7 @@ module.exports = configure(function (ctx) {
       'i18n',
       'axios',
       'api-cache',
+      'user-session-cache',
       'apexcharts'
     ],
 
